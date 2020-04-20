@@ -15,7 +15,7 @@ class Play extends Phaser.Scene {
     create() {
         // place tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0,0);
-        this.starfield = this.add.tileSprite(0, 0, 640, 480, 'planets').setOrigin(0,0);
+        this.planets = this.add.tileSprite(0, 0, 640, 480, 'planets').setOrigin(0,0);
         // white rectangle borders
         this.add.rectangle(5, 5, 630, 32, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(5, 443, 630, 32, 0xFFFFFF).setOrigin(0, 0);
@@ -47,6 +47,7 @@ class Play extends Phaser.Scene {
         //score
         this.p1Score = 0;
 
+
         //score display
         let scoreConfig = {
             fontFamily: 'Courier',
@@ -61,7 +62,25 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
         this.scoreLeft = this.add.text(69, 54, this.p1Score, scoreConfig);
+
+        //highscore display
+        let highConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 100
+        }
+
+        this.highLeft = this.add.text(224, 54, game.settings.highScore, highConfig);
+
         
+
         // game over flag
         this.gameOver = false;
         
@@ -72,20 +91,45 @@ class Play extends Phaser.Scene {
             this.add.text(game.config.width/2, game.config.height/2 + 64, '(F)ire to Restart or ← for Menu',scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
+        
+        // clock display
+        let clockConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 150
+        }
+        this.timeRight = this.add.text(420, 54, this.game.settings.gameTimer, clockConfig);
     }
     
     update() {
+        if(this.gameOver && this.p1Score>this.game.settings.highScore){
+            this.game.settings.highScore = this.p1Score;
+            
+        }
         //check key input for restart
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyF)){
             this.scene.restart(this.p1Score);
+            
         }
 
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)){
             this.scene.start("menuScene");
         }
 
+        // timer
+        this.timeRight.text = this.game.settings.gameTimer/1000 - Math.floor(this.clock.elapsed/1000);
+        
+
         this.starfield.tilePositionX -= 4;
         this.planets.tilePositionX -= 6;
+        
         if(!this.gameOver){
             this.p1Rocket.update();
             this.ship01.update();
