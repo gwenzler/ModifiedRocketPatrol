@@ -9,7 +9,10 @@ class Play extends Phaser.Scene {
         this.load.image('spaceship','./assets/spaceship.png');
         this.load.image('ufo','./assets/ufo.png');
         this.load.image('starfield','./assets/starfield.png');
-        this.load.image('planets','./assets/planets.png');
+        this.load.image('planet1','./assets/planet1.png');
+        this.load.image('planet2','./assets/planet2.png');
+        this.load.image('mountains','./assets/mountains.png');
+        this.load.image('asteroid','./assets/asteroid.png');
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
         this.load.spritesheet('boom', './assets/boom.png', {frameWidth: 44, frameHeight: 19, startFrame: 0, endFrame: 5});
     }
@@ -17,7 +20,10 @@ class Play extends Phaser.Scene {
     create() {
         // place tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0,0);
-        this.planets = this.add.tileSprite(0, 0, 640, 480, 'planets').setOrigin(0,0);
+        this.planet1 = this.add.tileSprite(0, 0, 640, 480, 'planet1').setOrigin(0,0);
+        this.planet2 = this.add.tileSprite(0, 0, 640, 480, 'planet2').setOrigin(0,0);
+        this.mountain = this.add.tileSprite(0, 0, 640, 480, 'mountains').setOrigin(0,0);
+        this.asteroid = this.add.tileSprite(0, 0, 640, 480, 'asteroid').setOrigin(0,0);
          // add spaceships (x3)
         this.ship01 = new Spaceship(this, game.config.width + 192, 196, 'spaceship', 0, 30).setOrigin(0,0);
         this.ship02 = new Spaceship(this, game.config.width + 96, 260, 'spaceship', 0, 20).setOrigin(0,0);
@@ -138,7 +144,10 @@ class Play extends Phaser.Scene {
         
 
         this.starfield.tilePositionX -= 4;
-        this.planets.tilePositionX -= 6;
+        this.planet1.tilePositionX -= 4.3;
+        this.planet2.tilePositionX -= 4.8;
+        this.mountain.tilePositionX -= 5.7;
+        this.asteroid.tilePositionX -= 6.5;
         
         if(!this.gameOver){
             this.p1Rocket.update();
