@@ -7,15 +7,23 @@ class Play extends Phaser.Scene {
         //load images/tile sprites
         this.load.image('rocket','./assets/rocket.png');
         this.load.image('spaceship','./assets/spaceship.png');
+        this.load.image('ufo','./assets/ufo.png');
         this.load.image('starfield','./assets/starfield.png');
         this.load.image('planets','./assets/planets.png');
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+        this.load.spritesheet('boom', './assets/boom.png', {frameWidth: 44, frameHeight: 19, startFrame: 0, endFrame: 5});
     }
 
     create() {
         // place tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0,0);
         this.planets = this.add.tileSprite(0, 0, 640, 480, 'planets').setOrigin(0,0);
+         // add spaceships (x3)
+        this.ship01 = new Spaceship(this, game.config.width + 192, 196, 'spaceship', 0, 30).setOrigin(0,0);
+        this.ship02 = new Spaceship(this, game.config.width + 96, 260, 'spaceship', 0, 20).setOrigin(0,0);
+        this.ship03 = new Spaceship(this, game.config.width, 332, 'spaceship', 0, 10).setOrigin(0,0);
+        this.ufo = new Ufo(this,game.config.width - 78, 132, 'ufo', 0, 50).setOrigin(0,0);
+        
         // white rectangle borders
         this.add.rectangle(5, 5, 630, 32, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(5, 443, 630, 32, 0xFFFFFF).setOrigin(0, 0);
@@ -27,10 +35,6 @@ class Play extends Phaser.Scene {
         // add rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2 - 8, 431, 'rocket').setScale(0.5, 0.5).setOrigin(0, 0);
 
-        // add spaceships (x3)
-        this.ship01 = new Spaceship(this, game.config.width + 192, 132, 'spaceship', 0, 30).setOrigin(0,0);
-        this.ship02 = new Spaceship(this, game.config.width + 96, 196, 'spaceship', 0, 20).setOrigin(0,0);
-        this.ship03 = new Spaceship(this, game.config.width, 260, 'spaceship', 0, 10).setOrigin(0,0);
        
         //define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
@@ -41,6 +45,12 @@ class Play extends Phaser.Scene {
         this.anims.create({
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
+            frameRate: 30
+        });
+
+        this.anims.create({
+            key: 'kaboom',
+            frames: this.anims.generateFrameNumbers('boom', { start: 0, end: 5, first: 0}),
             frameRate: 30
         });
 
@@ -135,6 +145,7 @@ class Play extends Phaser.Scene {
             this.ship01.update();
             this.ship02.update();
             this.ship03.update();
+            this.ufo.update();
         }
         // check collisions
         if(this.checkCollision(this.p1Rocket, this.ship03)) {
@@ -148,6 +159,10 @@ class Play extends Phaser.Scene {
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
+        }
+        if (this.checkCollision(this.p1Rocket, this.ufo)) {
+            this.p1Rocket.reset();
+            this.ufoExplode(this.ufo);
         }
     }
 
@@ -168,6 +183,22 @@ class Play extends Phaser.Scene {
         // create explosion sprite at ship's position
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');
+        boom.on('animationcomplete', () => {
+            ship.reset();
+            ship.alpha = 1;
+            boom.destroy();
+        });
+        //score increment and repaint
+        this.p1Score += ship.points;
+        this.scoreLeft.text = this.p1Score;
+        this.sound.play('sfx_explosion');
+    }
+
+    ufoExplode(ship) {
+        ship.alpha = 0;         // temporarily hide ship
+        // create explosion sprite at ship's position
+        let boom = this.add.sprite(ship.x, ship.y, 'boom').setOrigin(0, 0);
+        boom.anims.play('kaboom');
         boom.on('animationcomplete', () => {
             ship.reset();
             ship.alpha = 1;

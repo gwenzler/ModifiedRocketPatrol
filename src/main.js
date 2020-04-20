@@ -8,6 +8,7 @@ let game = new Phaser.Game(config);
 
 game.settings = {
     spaceshipSpeed: 3,
+    ufoSpeed: 4,
     gameTimer: 60000,
     highScore: 0
 }
