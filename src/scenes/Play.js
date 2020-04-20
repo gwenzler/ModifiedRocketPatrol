@@ -13,7 +13,7 @@ class Play extends Phaser.Scene {
         this.load.image('planet2','./assets/planet2.png');
         this.load.image('mountains','./assets/mountains.png');
         this.load.image('asteroid','./assets/asteroid.png');
-        this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+        this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 6});
         this.load.spritesheet('boom', './assets/boom.png', {frameWidth: 44, frameHeight: 19, startFrame: 0, endFrame: 5});
     }
 
@@ -39,7 +39,7 @@ class Play extends Phaser.Scene {
         this.add.rectangle(37, 42, 566, 64, 0x00FF00).setOrigin(0, 0);
 
         // add rocket (p1)
-        this.p1Rocket = new Rocket(this, game.config.width/2 - 8, 431, 'rocket').setScale(0.5, 0.5).setOrigin(0, 0);
+        this.p1Rocket = new Rocket(this, game.config.width/2 - 8, 431, 'rocket').setOrigin(0, 0);
 
        
         //define keys
@@ -50,7 +50,7 @@ class Play extends Phaser.Scene {
         // animation config
         this.anims.create({
             key: 'explode',
-            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
+            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 6, first: 0}),
             frameRate: 30
         });
 

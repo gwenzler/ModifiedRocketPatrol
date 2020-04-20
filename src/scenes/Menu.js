@@ -8,9 +8,12 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_select', './assets/blip_select12.wav');
         this.load.audio('sfx_explosion', './assets/explosion38.wav');
         this.load.audio('sfx_rocket', './assets/rocket_shot.wav');
+        this.load.image('starfield','./assets/starfield.png');
     }
 
     create() {
+
+        this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0,0);
         //menu display
         let menuConfig = {
             fontFamily: 'Courier',
@@ -43,12 +46,13 @@ class Menu extends Phaser.Scene {
     }
 
     update() {
+        this.starfield.tilePositionX -= 2;
         if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             // easy mode
             game.settings = {
                 spaceshipSpeed: 3,
                 ufoSpeed: 4,
-                gameTimer: 10000,
+                gameTimer: 60000,
                 highScore:0
             }
             this.sound.play('sfx_select');
